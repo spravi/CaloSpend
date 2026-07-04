@@ -12,7 +12,7 @@ The diagram below illustrates the system design and the boundary lines between t
 
 ```mermaid
 graph TD
-    User([User Context & Preferences]) -->|Sends Goal Request| Dashboard[FastAPI Dashboard / HTML Web UI]
+    User([User Context, Budget, & Dietary Profile]) -->|Sends Goal Request| Dashboard[FastAPI Dashboard / HTML Web UI]
     Dashboard -->|Sanitizes Input| Safety[Security Sanitizer]
     Safety -->|Runs Agent Pipeline| ADK[Google ADK Engine]
     
@@ -25,8 +25,8 @@ graph TD
         HabitPlanner -.->|Replans / Substituting Ingredients if Over Budget| GroceryScout
     end
     
-    ADK -->|Returns Typed Pydantic Schema| Dashboard
-    Dashboard -->|Renders Interactive Charts & Calendar| User
+    ADK -->|Returns Strategy with Disclaimers & Citations| Dashboard
+    Dashboard -->|Renders Interactive Charts, Warnings, & Citations| User
 ```
 
 ### Control Flow & Multi-Agent Negotiation Loop
@@ -42,9 +42,9 @@ sequenceDiagram
     participant Scout as Grocery Scout (Researcher Agent)
     participant DB as Grocery Local Database
     
-    User->>App: Input Budget, Target Calories, Goal (USD / INR)
+    User->>App: Input Budget, Target Calories, Goal, & Dietary Profile
     App->>Safety: Validate & sanitize input parameters
-    Safety->>Planner: Pass clean input state (e.g. Budget: 5000 INR, Target: 2000 kcal)
+    Safety->>Planner: Pass clean input state (e.g. Budget: 2000 INR, Vegetarian)
     Note over Planner: Start meal & exercise plan generation
     Planner->>Scout: Query ingredients footprint for 7 days
     Scout->>DB: Perform deterministic lookup (Price per 100g, Protein, Carbs, Fat, Calories)
@@ -59,8 +59,8 @@ sequenceDiagram
         Scout-->>Planner: Return alternative options
     end
     Note over Planner: Finalize 7-day meal and fitness plan matrix
-    Planner-->>App: Return structured JSON response conforming to Pydantic schema
-    App-->>User: Render visual charts, calendar, and validation flags
+    Planner-->>App: Return structured JSON response with Disclaimers & Citations
+    App-->>User: Render visual charts, calendar, warnings, and references
 ```
 
 ---
