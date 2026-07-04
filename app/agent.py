@@ -20,7 +20,7 @@ if "GOOGLE_API_KEY" not in os.environ and "GOOGLE_CLOUD_PROJECT" not in os.envir
 
 from google.adk.agents import Agent, SequentialAgent
 from google.adk.apps import App
-from app.tools import query_grocery
+from app.tools import query_grocery, query_grocerey
 
 # Define structured Pydantic models for Day 4 Guardrails
 class MealPlanDay(BaseModel):
@@ -41,6 +41,8 @@ class WealthHealthStrategy(BaseModel):
     within_budget_verification: bool = Field(description="True if weekly_total_cost <= user's budget, False otherwise")
     daily_nutrition_targets: List[MealPlanDay] = Field(description="Detailed daily meal plans with macros")
     exercise_routine: List[WorkoutPlanDay] = Field(description="7-day fitness routine matching target timelines and weight loss/gain goals")
+    disclaimer: str = Field(description="A medical disclaimer advising consultation with a physician or doctor before adopting.")
+    dietary_citations: List[str] = Field(description="Scientific citations/references of information substantiating the dietary choices (e.g., USDA guidelines for protein, WHO calorie limits).")
 
 # Helper function to load YAML configuration safely
 def load_yaml_config(filepath: str) -> dict:
@@ -65,8 +67,8 @@ model_name = os.environ.get("GEMINI_MODEL", manifest_data.get("model_parameters"
 grocery_scout = Agent(
     name="grocery_scout",
     model=model_name,
-    instruction=grocery_scout_prompt + "\n\nCRITICAL TOOL RULE: You must use the `query_grocery` tool to fetch food details. Pay close attention to the spelling: q-u-e-r-y-_-g-r-o-c-e-r-y (no extra 'e'). Do NOT call 'query_grocerey' or any misspelled variant.",
-    tools=[query_grocery],
+    instruction=grocery_scout_prompt + "\n\nCRITICAL TOOL RULE: You must use the `query_grocery` or fallback `query_grocerey` tool to fetch food details. Pay close attention to spelling.",
+    tools=[query_grocery, query_grocerey],
     description="Queries local wholesale database to fetch actual food prices and precise macronutrients."
 )
 
@@ -74,7 +76,12 @@ grocery_scout = Agent(
 planner_negotiator = Agent(
     name="habit_planner_negotiator",
     model=model_name,
-    instruction=habit_architect_prompt + "\n\nCRITICAL DELEGATION RULE: To query food ingredients, macronutrients, and pricing, you MUST transfer control to the 'grocery_scout' agent by calling the transfer_to_agent tool. You do not have direct access to the database or any tools other than delegating to grocery_scout. Do NOT attempt to call direct functions (e.g., do NOT call 'grocery_scout.get_food_items'). Always delegate.",
+    instruction=habit_architect_prompt + (
+        "\n\nCRITICAL DELEGATION RULE: To query food ingredients, macronutrients, and pricing, you MUST transfer control to the 'grocery_scout' agent by calling the transfer_to_agent tool. Do NOT attempt to call direct functions (e.g., do NOT call 'grocery_scout.get_food_items'). Always delegate."
+        "\n\nVEGETARIAN DIET RULES: If the user profile or dietary preferences contain 'vegetarian', 'pure vegetarian', or 'vegan', you MUST strictly exclude meat (e.g. Chicken Breast) and eggs (if pure vegetarian or vegan). Dynamically substitute with Paneer, Tofu, Soy Chunks, Lentils, or Oatmeal."
+        "\n\nPORTION SIZE CONTROL: Keep single-meal servings realistic and appetizing. Never exceed portion size thresholds in a single meal recommendation: Max 3 eggs per day, max 200g of Greek Yogurt or Tofu per single meal serving."
+        "\n\nDISCLAIMERS & CITATIONS: Add a standard medical disclaimer advising the user to consult a doctor or physician. Cite scientific references (e.g., USDA Dietary Guidelines, World Health Organization guidelines for calorie intake, RDA guidelines for protein) that validate your nutrition targets."
+    ),
     sub_agents=[grocery_scout]
 )
 
@@ -82,7 +89,7 @@ planner_negotiator = Agent(
 formatter = Agent(
     name="strategy_formatter",
     model=model_name,
-    instruction="Analyze the raw plan and compile the details strictly into the WealthHealthStrategy schema. Double check that the weekly_total_cost matches the sum of the grocery items and verify the within_budget_verification flag correctly.",
+    instruction="Analyze the raw plan and compile the details strictly into the WealthHealthStrategy schema. Double check that the weekly_total_cost matches the sum of the grocery items and verify the within_budget_verification flag correctly. Populate the disclaimer and dietary_citations fields with the medical warning and scientific references compiled by the planner.",
     output_schema=WealthHealthStrategy,
     output_key="strategy"
 )

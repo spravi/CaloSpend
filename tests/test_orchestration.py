@@ -49,6 +49,7 @@ def test_agent_orchestration_structure():
     assert grocery_scout.name == "grocery_scout"
     tool_names = [getattr(t, "name", getattr(t, "__name__", "")) for t in grocery_scout.tools]
     assert "query_grocery" in tool_names
+    assert "query_grocerey" in tool_names
     
     assert planner_negotiator.name == "habit_planner_negotiator"
     assert grocery_scout in planner_negotiator.sub_agents

@@ -278,6 +278,59 @@
             margin-bottom: 0.5rem;
         }
 
+        .disclaimer-banner {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            color: #f59e0b;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .citations-section {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .citations-section h3 {
+            font-size: 0.95rem;
+            color: #60a5fa;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .citations-section ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .citations-section li {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+            position: relative;
+            padding-left: 0.75rem;
+        }
+
+        .citations-section li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+        }
+
         .loader-overlay {
             position: fixed;
             top: 0;
@@ -360,8 +413,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="preferences">Dietary Preferences</label>
-                    <input type="text" id="preferences" name="preferences" value="High Protein, Low carb" placeholder="e.g. Vegetarian, Keto, High protein">
+                    <label for="preferences">Dietary Preference Profile</label>
+                    <select id="preferences" name="preferences">
+                        <option value="High Protein, Low carb" selected>Standard (High Protein, Low Carb)</option>
+                        <option value="Pure Vegetarian (No Meat, No Eggs), High Protein">Pure Vegetarian (No Meat, No Eggs)</option>
+                        <option value="Ovo-Vegetarian (No Meat, Eggs allowed), High Protein">Ovo-Vegetarian (Eggs Allowed)</option>
+                        <option value="Vegan (Plant-based only), High Protein">Vegan (Plant-Based Only)</option>
+                    </select>
                 </div>
 
                 <button type="submit" class="btn-submit">Generate Strategy</button>
@@ -379,6 +437,11 @@
                     <div id="budget-status">
                         <!-- Status Badge injected here -->
                     </div>
+                </div>
+
+                <div class="disclaimer-banner" id="medical-disclaimer">
+                    <span style="font-size: 1.2rem;">⚠️</span>
+                    <span id="disclaimer-text">This is only a recommendation. Please consult your physician or doctor before adopting this.</span>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
@@ -401,6 +464,11 @@
                 <h2 style="margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">7-Day Meal & Workout Matrix</h2>
                 <div class="calendar-grid" id="calendar-container">
                     <!-- Day Cards injected here -->
+                </div>
+
+                <div class="citations-section" id="scientific-citations">
+                    <h3>Scientific Sources & Reference Citations</h3>
+                    <ul id="citations-list"></ul>
                 </div>
             </div>
         </div>
@@ -507,6 +575,30 @@
                 `;
                 container.appendChild(card);
             });
+
+            // Disclaimer rendering
+            const disclaimerBanner = document.getElementById('medical-disclaimer');
+            if (data.disclaimer) {
+                document.getElementById('disclaimer-text').textContent = data.disclaimer;
+                disclaimerBanner.style.display = 'flex';
+            } else {
+                disclaimerBanner.style.display = 'none';
+            }
+
+            // Citations rendering
+            const citationsSection = document.getElementById('scientific-citations');
+            const citationsList = document.getElementById('citations-list');
+            citationsList.innerHTML = '';
+            if (data.dietary_citations && data.dietary_citations.length > 0) {
+                data.dietary_citations.forEach(c => {
+                    const li = document.createElement('li');
+                    li.textContent = c;
+                    citationsList.appendChild(li);
+                });
+                citationsSection.style.display = 'block';
+            } else {
+                citationsSection.style.display = 'none';
+            }
 
             // Update Charts
             renderCharts(labels, calorieData, totalProtein, totalCarbs, totalFat);

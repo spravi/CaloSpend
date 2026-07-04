@@ -119,6 +119,46 @@
       "fat_g": 49.9,
       "calories": 579.0,
       "category": "Fats"
+    },
+    {
+      "name": "Paneer",
+      "price_usd": 1.10,
+      "price_inr": 85.0,
+      "protein_g": 18.0,
+      "carbs_g": 3.0,
+      "fat_g": 20.0,
+      "calories": 265.0,
+      "category": "Protein"
+    },
+    {
+      "name": "Soy Chunks",
+      "price_usd": 0.90,
+      "price_inr": 70.0,
+      "protein_g": 52.0,
+      "carbs_g": 33.0,
+      "fat_g": 0.5,
+      "calories": 345.0,
+      "category": "Protein"
+    },
+    {
+      "name": "Chickpeas",
+      "price_usd": 0.60,
+      "price_inr": 45.0,
+      "protein_g": 19.0,
+      "carbs_g": 61.0,
+      "fat_g": 6.0,
+      "calories": 364.0,
+      "category": "Carbs"
+    },
+    {
+      "name": "Lentils",
+      "price_usd": 0.50,
+      "price_inr": 40.0,
+      "protein_g": 25.0,
+      "carbs_g": 60.0,
+      "fat_g": 1.0,
+      "calories": 353.0,
+      "category": "Carbs"
     }
   ]
 }
