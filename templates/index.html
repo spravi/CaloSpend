@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wealth-Health Strategist</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+        }
+
+        /* Sidebar Glass Card */
+        .sidebar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px border var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            height: fit-content;
+        }
+
+        .sidebar h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar p.subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        }
+
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        /* Main Content Glass Card */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 1rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .cost-gauge {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .cost-gauge span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        /* Calendar Matrix Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .day-card {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .day-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .day-card h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #60a5fa;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.5rem;
+        }
+
+        .day-card ul {
+            list-style: none;
+            margin-bottom: 0.75rem;
+        }
+
+        .day-card li {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+            padding-left: 0.75rem;
+            position: relative;
+        }
+
+        .day-card li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent-blue);
+        }
+
+        .macro-tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.75rem;
+        }
+
+        .macro-tag {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .tag-cal { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        .tag-protein { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .tag-carbs { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        .tag-fat { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .chart-wrapper {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: 320px;
+        }
+
+        .workout-section h3 {
+            font-size: 1.1rem;
+            color: #c084fc;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loader-overlay" id="loader">
+        <div class="spinner"></div>
+        <h2>Synthesizing Health & Wealth Plan...</h2>
+        <p style="color: var(--text-secondary); margin-top: 0.5rem;">The AI Agents are negotiate budgeting limits and meal options...</p>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar Inputs -->
+        <div class="sidebar">
+            <h1>Wealth-Health Strategist</h1>
+            <p class="subtitle">Concierge Agent Framework</p>
+
+            <form id="goal-form">
+                <div class="form-group">
+                    <label for="budget">Weekly Budget</label>
+                    <input type="number" id="budget" name="budget" value="250" required min="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="currency">Currency</label>
+                    <select id="currency" name="currency">
+                        <option value="USD" selected>USD ($)</option>
+                        <option value="INR">INR (₹)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="calories">Daily Calorie Target</label>
+                    <input type="number" id="calories" name="calories" value="2000" required min="800">
+                </div>
+
+                <div class="form-group">
+                    <label for="goal">Weight Goal</label>
+                    <select id="goal" name="goal">
+                        <option value="weight_loss" selected>Weight Loss</option>
+                        <option value="muscle_gain">Muscle Gain</option>
+                        <option value="maintenance">Maintenance</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="preferences">Dietary Preferences</label>
+                    <input type="text" id="preferences" name="preferences" value="High Protein, Low carb" placeholder="e.g. Vegetarian, Keto, High protein">
+                </div>
+
+                <button type="submit" class="btn-submit">Generate Strategy</button>
+            </form>
+        </div>
+
+        <!-- Main Display Panel -->
+        <div class="main-content">
+            <div class="panel" id="dashboard-panel">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Optimal Health-Wealth Strategy</h2>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;" id="meta-summary">Submit the parameters to initiate agent negotiation.</p>
+                    </div>
+                    <div id="budget-status">
+                        <!-- Status Badge injected here -->
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <div class="cost-gauge" id="cost-display">
+                        $0.00 <span>Weekly Total</span>
+                    </div>
+                </div>
+
+                <!-- Graphs wrapper -->
+                <div class="charts-container">
+                    <div class="chart-wrapper">
+                        <canvas id="macroChart"></canvas>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="calorieChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 7-Day Meal & Exercise Calendar -->
+                <h2 style="margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">7-Day Meal & Workout Matrix</h2>
+                <div class="calendar-grid" id="calendar-container">
+                    <!-- Day Cards injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let macroChartObj = null;
+        let calorieChartObj = null;
+
+        // Form submit integration
+        document.getElementById('goal-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loader = document.getElementById('loader');
+            loader.style.display = 'flex';
+
+            const payload = {
+                budget: parseFloat(document.getElementById('budget').value),
+                currency: document.getElementById('currency').value,
+                calorie_target: parseFloat(document.getElementById('calories').value),
+                goal: document.getElementById('goal').value,
+                preferences: document.getElementById('preferences').value
+            };
+
+            try {
+                const response = await fetch('/api/generate-strategy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    updateDashboard(result.data, payload);
+                } else {
+                    alert('Error: ' + (result.error || result.detail || JSON.stringify(result)));
+                }
+            } catch (err) {
+                alert('Connection failure: ' + err.message);
+            } finally {
+                loader.style.display = 'none';
+            }
+        });
+
+        function updateDashboard(data, inputs) {
+            const isUsd = data.currency === 'USD';
+            const symbol = isUsd ? '$' : '₹';
+            
+            // Meta Summary
+            document.getElementById('meta-summary').textContent = `Target: ${inputs.calorie_target} Calories | Goal: ${inputs.goal.replace('_', ' ')}`;
+            
+            // Total Cost display
+            document.getElementById('cost-display').innerHTML = `${symbol}${data.weekly_total_cost.toFixed(2)} <span>Weekly Total</span>`;
+            
+            // Status Badge
+            const statusDiv = document.getElementById('budget-status');
+            if (data.within_budget_verification) {
+                statusDiv.innerHTML = `<span class="status-badge status-success">✓ Under Budget Limit (${symbol}${inputs.budget})</span>`;
+            } else {
+                statusDiv.innerHTML = `<span class="status-badge status-danger">✗ Over Budget Limit (${symbol}${inputs.budget})</span>`;
+            }
+
+            // Day Cards render
+            const container = document.getElementById('calendar-container');
+            container.innerHTML = '';
+            
+            // Map day workout data
+            const workouts = {};
+            data.exercise_routine.forEach(w => {
+                workouts[w.day.toLowerCase()] = w.exercises;
+            });
+
+            let totalProtein = 0, totalCarbs = 0, totalFat = 0;
+            let calorieData = [];
+            let labels = [];
+
+            data.daily_nutrition_targets.forEach((day, index) => {
+                totalProtein += day.daily_protein;
+                totalCarbs += day.daily_carbs;
+                totalFat += day.daily_fat;
+                calorieData.push(day.daily_calories);
+                labels.push(day.day);
+
+                const card = document.createElement('div');
+                card.className = 'day-card';
+                
+                const mealList = day.meals.map(m => `<li>${m}</li>`).join('');
+                
+                const dayKey = day.day.toLowerCase();
+                const matchedWorkouts = workouts[dayKey] || workouts['day ' + (index + 1)] || ['Rest or stretch'];
+                const workoutList = matchedWorkouts.map(ex => `<li>${ex}</li>`).join('');
+
+                card.innerHTML = `
+                    <h3>${day.day}</h3>
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-transform: uppercase;">Meals</p>
+                    <ul>${mealList}</ul>
+                    <p style="font-size: 0.75rem; color: #c084fc; margin-top: 0.75rem; margin-bottom: 0.5rem; text-transform: uppercase;">Exercises</p>
+                    <ul>${workoutList}</ul>
+                    <div class="macro-tag-group">
+                        <span class="macro-tag tag-cal">${day.daily_calories.toFixed(0)} kcal</span>
+                        <span class="macro-tag tag-protein">P: ${day.daily_protein.toFixed(0)}g</span>
+                        <span class="macro-tag tag-carbs">C: ${day.daily_carbs.toFixed(0)}g</span>
+                        <span class="macro-tag tag-fat">F: ${day.daily_fat.toFixed(0)}g</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Update Charts
+            renderCharts(labels, calorieData, totalProtein, totalCarbs, totalFat);
+        }
+
+        function renderCharts(labels, calorieData, protein, carbs, fat) {
+            if (macroChartObj) macroChartObj.destroy();
+            if (calorieChartObj) calorieChartObj.destroy();
+
+            // Macro chart (Pie)
+            const ctxMacro = document.getElementById('macroChart').getContext('2d');
+            macroChartObj = new Chart(ctxMacro, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Protein (g)', 'Carbs (g)', 'Fat (g)'],
+                    datasets: [{
+                        data: [protein, carbs, fat],
+                        backgroundColor: ['#34d399', '#fbbf24', '#f87171'],
+                        borderColor: 'rgba(255,255,255,0.05)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#f8fafc' } },
+                        title: { display: true, text: 'Total Weekly Macro Distribution (g)', color: '#f8fafc' }
+                    }
+                }
+            });
+
+            // Calorie chart (Bar)
+            const ctxCalorie = document.getElementById('calorieChart').getContext('2d');
+            calorieChartObj = new Chart(ctxCalorie, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Calories (kcal)',
+                        data: calorieData,
+                        backgroundColor: '#60a5fa',
+                        borderColor: '#3b82f6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Daily Calorie Track', color: '#f8fafc' }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

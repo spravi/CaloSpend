@@ -1,0 +1,18 @@
+{
+  "eval_cases": [
+    {
+      "eval_case_id": "usd_weight_loss",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "Generate a 7-day health and wealth plan. Weekly budget limit is 15 USD. Daily nutrition target is 1800 calories. Weight Goal target is weight_loss. Dietary Preferences: High Protein."}]
+      }
+    },
+    {
+      "eval_case_id": "inr_muscle_gain",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "Generate a 7-day health and wealth plan. Weekly budget limit is 1000 INR. Daily nutrition target is 2800 calories. Weight Goal target is muscle_gain. Dietary Preferences: Vegetarian."}]
+      }
+    }
+  ]
+}

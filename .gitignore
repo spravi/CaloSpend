@@ -1,0 +1,23 @@
+# Local Credentials and Environment
+.env
+.env.*
+*.log
+
+# Python Artifacts and Virtual Environments
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Node.js and packages
+node_modules/
+.npm/
+
+# Kaggle / Submission archives
+submission.zip
+backups/
+
+# Antigravity/Gemini system directories
+.gemini/
+.agents/

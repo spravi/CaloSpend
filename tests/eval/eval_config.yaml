@@ -1,0 +1,43 @@
+# eval_config.yaml
+metrics_to_run:
+  - budget_adherence_check
+  - nutritional_accuracy_check
+
+custom_metrics:
+  - name: budget_adherence_check
+    prompt_template: |
+      You are an expert AI solution auditor evaluating the Wealth-Health Strategist agent.
+      Review the user prompt and the final agent response, specifically the JSON output corresponding to the WealthHealthStrategy schema.
+      
+      User Prompt: {prompt}
+      Final Response: {response}
+      
+      Verify:
+      1. Is the weekly_total_cost present and calculated correctly?
+      2. Does the weekly_total_cost match the currency requested in the prompt (USD or INR)?
+      3. Is the 'within_budget_verification' boolean flag accurate? (True if weekly_total_cost <= budget limit from prompt, False otherwise).
+      
+      Return your evaluation as a valid JSON object matching this structure:
+      {
+        "score": <integer between 1 and 5; 5 = completely accurate, 1 = major errors or wrong currency>,
+        "explanation": "<detailed rationale>"
+      }
+
+  - name: nutritional_accuracy_check
+    prompt_template: |
+      You are an expert nutritionist auditor evaluating the Wealth-Health Strategist agent.
+      Review the user prompt and the final agent response.
+      
+      User Prompt: {prompt}
+      Final Response: {response}
+      
+      Verify:
+      1. Are daily nutrition targets present for a 7-day span?
+      2. Are the daily calories and protein/carbs/fat macronutrients logically calculated and aggregated?
+      3. Does the physical exercise routine align with the weight loss or muscle gain goals mentioned in the prompt?
+      
+      Return your evaluation as a valid JSON object matching this structure:
+      {
+        "score": <integer between 1 and 5; 5 = perfect alignment, 1 = calorie targets not met or missing exercise matrix>,
+        "explanation": "<detailed rationale>"
+      }

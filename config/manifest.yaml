@@ -1,0 +1,22 @@
+# Wealth-Health Strategist System Configuration
+project:
+  title: "The Wealth-Health Strategist (Wellness + Finance)"
+  version: "1.0.0"
+  description: "A production-grade multi-agent health and wealth planner optimizing meal plans and fitness under strict budget constraints."
+
+model_parameters:
+  core_model: "gemini-1.5-pro"
+  fallback_model: "gemini-1.5-flash"
+  temperature: 0.1
+  max_output_tokens: 2048
+
+boundaries:
+  currencies:
+    - code: "USD"
+      symbol: "$"
+    - code: "INR"
+      symbol: "₹"
+  default_currency: "USD"
+  min_calories_daily: 1200
+  max_calories_daily: 4500
+  max_budget_limit: 100000

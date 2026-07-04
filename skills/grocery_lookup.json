@@ -1,0 +1,124 @@
+{
+  "foods": [
+    {
+      "name": "Oatmeal",
+      "price_usd": 0.40,
+      "price_inr": 30.0,
+      "protein_g": 13.0,
+      "carbs_g": 68.0,
+      "fat_g": 6.5,
+      "calories": 379.0,
+      "category": "Carbs"
+    },
+    {
+      "name": "Chicken Breast",
+      "price_usd": 1.50,
+      "price_inr": 120.0,
+      "protein_g": 31.0,
+      "carbs_g": 0.0,
+      "fat_g": 3.6,
+      "calories": 165.0,
+      "category": "Protein"
+    },
+    {
+      "name": "Eggs",
+      "price_usd": 0.60,
+      "price_inr": 45.0,
+      "protein_g": 12.6,
+      "carbs_g": 0.7,
+      "fat_g": 9.5,
+      "calories": 143.0,
+      "category": "Protein"
+    },
+    {
+      "name": "Tofu",
+      "price_usd": 0.80,
+      "price_inr": 60.0,
+      "protein_g": 8.0,
+      "carbs_g": 1.9,
+      "fat_g": 4.8,
+      "calories": 76.0,
+      "category": "Protein"
+    },
+    {
+      "name": "Brown Rice",
+      "price_usd": 0.30,
+      "price_inr": 25.0,
+      "protein_g": 7.5,
+      "carbs_g": 76.0,
+      "fat_g": 2.7,
+      "calories": 362.0,
+      "category": "Carbs"
+    },
+    {
+      "name": "Peanut Butter",
+      "price_usd": 1.10,
+      "price_inr": 85.0,
+      "protein_g": 25.0,
+      "carbs_g": 20.0,
+      "fat_g": 50.0,
+      "calories": 588.0,
+      "category": "Fats"
+    },
+    {
+      "name": "Spinach",
+      "price_usd": 0.50,
+      "price_inr": 35.0,
+      "protein_g": 2.9,
+      "carbs_g": 3.6,
+      "fat_g": 0.4,
+      "calories": 23.0,
+      "category": "Veggie"
+    },
+    {
+      "name": "Milk",
+      "price_usd": 0.70,
+      "price_inr": 55.0,
+      "protein_g": 3.3,
+      "carbs_g": 4.8,
+      "fat_g": 3.2,
+      "calories": 61.0,
+      "category": "Dairy"
+    },
+    {
+      "name": "Banana",
+      "price_usd": 0.25,
+      "price_inr": 20.0,
+      "protein_g": 1.1,
+      "carbs_g": 22.8,
+      "fat_g": 0.3,
+      "calories": 89.0,
+      "category": "Carbs"
+    },
+    {
+      "name": "Greek Yogurt",
+      "price_usd": 1.20,
+      "price_inr": 90.0,
+      "protein_g": 10.0,
+      "carbs_g": 3.6,
+      "fat_g": 0.4,
+      "calories": 59.0,
+      "category": "Protein"
+    },
+    {
+      "name": "Olive Oil",
+      "price_usd": 2.00,
+      "price_inr": 160.0,
+      "protein_g": 0.0,
+      "carbs_g": 0.0,
+      "fat_g": 100.0,
+      "calories": 884.0,
+      "category": "Fats"
+    },
+    {
+      "name": "Almonds",
+      "price_usd": 1.80,
+      "price_inr": 140.0,
+      "protein_g": 21.2,
+      "carbs_g": 21.6,
+      "fat_g": 49.9,
+      "calories": 579.0,
+      "category": "Fats"
+    }
+  ]
+}
