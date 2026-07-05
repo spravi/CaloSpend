@@ -70,7 +70,7 @@ sequenceDiagram
 
 ### Conceptual Negotiation Control Flow (Alternative Visualization)
 
-![Wealth-Health Strategist Conceptual Flow](assets/original_flow.png)
+![Wealth-Health Strategist Conceptual Flow](assets/original_flow_v2.png)
 
 ---
 
