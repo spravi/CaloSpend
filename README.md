@@ -7,6 +7,8 @@ The **Wealth-Health Strategist** is a production-ready, spec-driven multi-agent 
 
 ## 1. Solution Architecture & Flow Diagrams
 
+![Wealth-Health Strategist Solution Overview](assets/overview.png)
+
 ### Solution Architecture
 The diagram below illustrates the system design and the boundary lines between the user, the FastAPI Web UI Dashboard, the local lookup wholesale database, the Google ADK runner, and the Gemini Pro model.
 
@@ -30,6 +32,9 @@ graph TD
 ```
 
 ### Control Flow & Multi-Agent Negotiation Loop
+
+![Wealth-Health Strategist High Level Flow](assets/flow.png)
+
 The sequence below displays how the Planner (`Habit Architect`) dynamically checks the budget total and queries the Researcher (`Grocery Scout`) for cheaper alternatives if the initial food selection violates the user's budget limit.
 
 ```mermaid
