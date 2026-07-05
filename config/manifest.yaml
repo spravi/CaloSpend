@@ -1,6 +1,6 @@
-# Wealth-Health Strategist System Configuration
+# CaloSpend System Configuration
 project:
-  title: "The Wealth-Health Strategist (Wellness + Finance)"
+  title: "CaloSpend — Calories & Spend Optimizer"
   version: "1.0.0"
   description: "A production-grade multi-agent health and wealth planner optimizing meal plans and fitness under strict budget constraints."
 

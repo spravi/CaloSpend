@@ -1,7 +1,7 @@
-# The Wealth-Health Strategist (Wellness + Finance)
+# CaloSpend — Calories & Spend Optimizer
 ## Kaggle AI Agents Intensive Capstone Project (Concierge Track)
 
-The **Wealth-Health Strategist** is a production-ready, spec-driven multi-agent application built on the **Google Agent Development Kit (ADK)** Python framework. It solves a complex, non-linear optimization problem: creating a weekly fitness and meal matrix tailored to dietary preferences and caloric targets while strictly adhering to budget limits in either USD or INR.
+**CaloSpend** is a production-ready, spec-driven multi-agent application built on the **Google Agent Development Kit (ADK)** Python framework. It solves a complex, non-linear optimization problem: creating a weekly fitness and meal matrix tailored to dietary preferences and caloric targets while strictly adhering to budget limits in either USD or INR.
 
 ---
 
