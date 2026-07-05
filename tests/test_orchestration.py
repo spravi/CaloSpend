@@ -56,3 +56,13 @@ def test_agent_orchestration_structure():
     
     assert formatter.name == "strategy_formatter"
     assert formatter.output_schema is not None
+
+
+@pytest.mark.asyncio
+async def test_mcp_server_registration():
+    """Verify that the MCP server interface is correctly configured and exposes the strategist tool."""
+    from mcp_server import mcp
+    tools = await mcp.list_tools()
+    tool_names = [t.name for t in tools]
+    assert "generate_strategy" in tool_names
+
