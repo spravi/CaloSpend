@@ -68,6 +68,10 @@ sequenceDiagram
     App-->>User: Render visual charts, calendar, warnings, and references
 ```
 
+### Conceptual Negotiation Control Flow (Alternative Visualization)
+
+![Wealth-Health Strategist Conceptual Flow](assets/original_flow.png)
+
 ---
 
 ## 2. Declarative Personas Configuration
