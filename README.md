@@ -149,3 +149,11 @@ agents-cli eval run
 ## 6. Production Packaging & CI/CD
 - **Submission Packaging**: Run the utility script `uv run python scripts/package_submission.py` to clean build artifacts and package the project into a clean `submission.zip` zip folder for grading.
 - **CI/CD Workflow**: The `.github/workflows/deploy.yml` configuration triggers code style checks (using Ruff) and executes functional tests on every push or pull request to the `main` branch.
+
+---
+
+## 7. User Interface & Input Reference
+
+The interface sidebar guides the user to supply parameters for the agent optimization cascade.
+
+![CaloSpend User Inputs & Tooltips](assets/input_screen.png)
