@@ -157,3 +157,18 @@ agents-cli eval run
 The interface sidebar guides the user to supply parameters for the agent optimization cascade.
 
 ![CaloSpend User Inputs & Tooltips](assets/input_screen.png)
+
+---
+
+## 8. Strategy Output & Results Dashboard
+
+Once the agent negotiation completes, the dashboard displays structured outputs with verified budget limits, meal schedules, portion sizes, and citations.
+
+### Section 8.1: Strategy Header & Weekly Totals
+![Strategy Header & Gauges](assets/summary_dashboard.png)
+
+### Section 8.2: 7-Day Meal & Exercise Matrix
+![7-Day Meal Matrix](assets/meal_matrix.png)
+
+### Section 8.3: Scientific Sources & References
+![Scientific Citations](assets/citations.png)
