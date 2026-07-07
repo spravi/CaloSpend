@@ -3,11 +3,12 @@ import os
 import zipfile
 from pathlib import Path
 
+
 def package_project(output_filename: str = "submission.zip"):
     """Cleans up cache files and packages the workspace into a clean submission zip file."""
     workspace_dir = Path(__file__).parent.parent.resolve()
     print(f"[Architect] Initiating packaging script in workspace: {workspace_dir}")
-    
+
     # Files/folders to exclude from submission zip
     ignore_patterns = {
         ".git",
@@ -20,7 +21,7 @@ def package_project(output_filename: str = "submission.zip"):
         ".DS_Store",
         ".agents",
         ".gemini",
-        "uv.lock"
+        "uv.lock",
     }
 
     ignored_extensions = {".pyc", ".pyo", ".pyd"}
@@ -32,7 +33,9 @@ def package_project(output_filename: str = "submission.zip"):
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
         for root, dirs, files in os.walk(workspace_dir):
             # Exclude folders matches
-            dirs[:] = [d for d in dirs if d not in ignore_patterns and not d.startswith(".")]
+            dirs[:] = [
+                d for d in dirs if d not in ignore_patterns and not d.startswith(".")
+            ]
 
             for file in files:
                 file_path = Path(root) / file
@@ -47,8 +50,11 @@ def package_project(output_filename: str = "submission.zip"):
                 zip_file.write(file_path, relative_path)
                 files_zipped += 1
 
-    print(f"[Security Auditor] Finished packaging. Zipped {files_zipped} files successfully.")
+    print(
+        f"[Security Auditor] Finished packaging. Zipped {files_zipped} files successfully."
+    )
     print(f"[Success] Project packaged cleanly into: {output_filename}")
+
 
 if __name__ == "__main__":
     package_project()
