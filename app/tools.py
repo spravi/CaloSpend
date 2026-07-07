@@ -1,6 +1,7 @@
 # app/tools.py
 from skills.grocery_scout_skill import lookup_food_details
 
+
 def query_grocery(food_name: str, currency: str) -> dict:
     """Searches the local wholesale grocery database for a food item and retrieves its nutritional values and price.
 

@@ -1,22 +1,22 @@
 # app_gui.py
-import os
-import json
 import logging
+
 from dotenv import load_dotenv
-load_dotenv() # Load env vars from .env file
+
+load_dotenv()  # Load env vars from .env file
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
-
-# Import security sanitizers
-from app.security import sanitize_input_text, sanitize_budget, execute_with_safety_guard
 
 # Import ADK core runner and agent
 from google.adk.runners import InMemoryRunner
+from pydantic import BaseModel
+
 from app.agent import app as adk_app
+
+# Import security sanitizers
+from app.security import sanitize_budget, sanitize_input_text
 
 # Initialize FastAPI
 app = FastAPI(title="The Wealth-Health Strategist Dashboard")
@@ -29,11 +29,10 @@ logger = logging.getLogger("WealthHealthGUI")
 templates = Jinja2Templates(directory="templates")
 
 # Initialize the ADK stateful runner
-runner = InMemoryRunner(
-    app=adk_app
-)
+runner = InMemoryRunner(app=adk_app)
 runner.auto_create_session = True
 session_service = runner.session_service
+
 
 class StrategyRequest(BaseModel):
     budget: float
@@ -42,15 +41,17 @@ class StrategyRequest(BaseModel):
     goal: str
     preferences: str
 
+
 @app.get("/", response_class=HTMLResponse)
 async def read_dashboard(request: Request):
     """Serves the main interactive dashboard UI."""
     return templates.TemplateResponse(request, "index.html")
 
+
 @app.post("/api/generate-strategy")
 async def generate_strategy_api(payload: StrategyRequest):
     """Receives user input, sanitizes it, runs ADK agent cascade, and returns structured data."""
-    
+
     # 1. Day 4 Input Sanitization & Safety Guardrails
     clean_goal = sanitize_input_text(payload.goal)
     clean_preferences = sanitize_input_text(payload.preferences)
@@ -73,33 +74,37 @@ async def generate_strategy_api(payload: StrategyRequest):
     async def run_agent_pipeline():
         user_id = "default_user_1"
         session_id = "health_wealth_session"
-        
+
         # Clear existing session first to ensure clean state and fresh calculations
         try:
-            await session_service.delete_session(app_name="app", user_id=user_id, session_id=session_id)
+            await session_service.delete_session(
+                app_name="app", user_id=user_id, session_id=session_id
+            )
         except Exception:
-            pass # Session might not exist yet
+            pass  # Session might not exist yet
 
         from google.genai import types
+
         new_msg = types.Content(
-            role="user",
-            parts=[types.Part.from_text(text=user_prompt)]
+            role="user", parts=[types.Part.from_text(text=user_prompt)]
         )
-        
+
         # Run the sequential agents
         async for _ in runner.run_async(
-            user_id=user_id,
-            session_id=session_id,
-            new_message=new_msg
+            user_id=user_id, session_id=session_id, new_message=new_msg
         ):
             pass
 
         # Load session state to retrieve Pydantic strategy schema
-        session = await session_service.get_session(app_name="app", user_id=user_id, session_id=session_id)
+        session = await session_service.get_session(
+            app_name="app", user_id=user_id, session_id=session_id
+        )
         strategy = session.state.get("strategy")
         if not strategy:
-            raise ValueError("Agent failed to output a formatted strategy. Check core model settings.")
-        
+            raise ValueError(
+                "Agent failed to output a formatted strategy. Check core model settings."
+            )
+
         # Return serializable dict representation
         if hasattr(strategy, "model_dump"):
             return strategy.model_dump()
@@ -114,6 +119,7 @@ async def generate_strategy_api(payload: StrategyRequest):
         logger.error("Agent execution failed: %s", execution_result.get("error"))
         raise HTTPException(status_code=500, detail=execution_result.get("error"))
 
+
 async def execute_with_safety_guard_async(coro):
     """Helper to wrap async function execution with safety guards."""
     try:
@@ -121,7 +127,4 @@ async def execute_with_safety_guard_async(coro):
         return {"status": "success", "data": data}
     except Exception as e:
         logger.exception("Raw exception intercepted:")
-        return {
-            "status": "failed",
-            "error": str(e)
-        }
+        return {"status": "failed", "error": str(e)}

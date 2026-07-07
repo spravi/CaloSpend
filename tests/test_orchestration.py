@@ -1,8 +1,10 @@
 # tests/test_orchestration.py
 import pytest
+
+from app.agent import formatter, grocery_scout, planner_negotiator
+from app.security import sanitize_budget, sanitize_input_text
 from skills.grocery_scout_skill import lookup_food_details
-from app.security import sanitize_input_text, sanitize_budget
-from app.agent import grocery_scout, planner_negotiator, formatter
+
 
 def test_grocery_lookup_success():
     """Verify that grocery lookup returns correct details and pricing for USD and INR."""
@@ -20,11 +22,13 @@ def test_grocery_lookup_success():
     assert res_inr["price"] == 30.0
     assert res_inr["currency"] == "INR"
 
+
 def test_grocery_lookup_not_found():
     """Verify that searching for a non-existent item returns a safe error dictionary instead of raising an error."""
     res = lookup_food_details("nonexistent_food_item", "USD")
     assert "error" in res
     assert "not found" in res["error"]
+
 
 def test_input_sanitization():
     """Verify that security input sanitization works and prevents injection attempts."""
@@ -32,6 +36,7 @@ def test_input_sanitization():
     cleaned = sanitize_input_text(malicious)
     assert "[CLEANED]" in cleaned
     assert "override" not in cleaned.lower()
+
 
 def test_budget_boundary_checks():
     """Verify that budget parser enforces boundaries and handles invalid data types gracefully."""
@@ -44,16 +49,19 @@ def test_budget_boundary_checks():
     # Check negative budget fallback
     assert sanitize_budget(-50) == 10.0
 
+
 def test_agent_orchestration_structure():
     """Verify that all components of the dual-agent cascade are correctly defined and linked."""
     assert grocery_scout.name == "grocery_scout"
-    tool_names = [getattr(t, "name", getattr(t, "__name__", "")) for t in grocery_scout.tools]
+    tool_names = [
+        getattr(t, "name", getattr(t, "__name__", "")) for t in grocery_scout.tools
+    ]
     assert "query_grocery" in tool_names
     assert "query_grocerey" in tool_names
-    
+
     assert planner_negotiator.name == "habit_planner_negotiator"
     assert grocery_scout in planner_negotiator.sub_agents
-    
+
     assert formatter.name == "strategy_formatter"
     assert formatter.output_schema is not None
 
@@ -62,7 +70,7 @@ def test_agent_orchestration_structure():
 async def test_mcp_server_registration():
     """Verify that the MCP server interface is correctly configured and exposes the strategist tool."""
     from mcp_server import mcp
+
     tools = await mcp.list_tools()
     tool_names = [t.name for t in tools]
     assert "generate_strategy" in tool_names
-
