@@ -172,3 +172,57 @@ Once the agent negotiation completes, the dashboard displays structured outputs 
 
 ### Section 8.3: Scientific Sources & References
 ![Scientific Citations](assets/citations.png)
+
+---
+
+## 9. Project Write up
+
+### 9.1 Problem Statement: Why This Solution is Needed
+*   **The Conflict of Health vs. Wealth**: Users seeking to meet fitness goals (e.g., gaining muscle or losing weight) face a highly complex optimization problem: obtaining precise macronutrient/calorie targets while strictly adhering to a weekly financial budget.
+*   **Non-Linear Constraints**: Standard calculations break when budgets are low and calorie demands are high. A simple database query cannot resolve conflicts like: *"How do I get 2,500 calories of vegetarian protein under 2,000 INR per week?"*
+*   **The Personalization Gap**: Standard meal planners offer generic recipes that ignore local wholesale ingredient prices, leading to plans that are either too expensive to buy or physically impossible to consume (e.g., recommending a user eat 30 eggs in a single day).
+
+### 9.2 Proposed Solution, Architecture, and Project Journey
+*   **The Proposed Solution (CaloSpend)**: A production-ready concierge application that dynamically resolves the health-wealth conflict by co-optimizing diet requirements, exercise routines, and local grocery costs.
+*   **Multi-Agent Sequential Cascade**:
+    *   **Habit Architect (Planner Persona)**: Analyzes user goals, designs the 7-day meal and fitness matrix, enforces portion limits, and tracks total plan costs.
+    *   **Grocery Scout (Researcher Persona)**: Executes deterministic lookups in the local database to find pricing and nutritional facts per 100g of food.
+*   **The Project Journey**:
+    *   *Phase 1*: Established the baseline agent cascade utilizing the Google Agent Development Kit (ADK).
+    *   *Phase 2*: Integrated a FastAPI Web GUI Dashboard for rich interactive charts (macronutrients, budget gauges, and calendars).
+    *   *Phase 3*: Hardened the application with portion caps, medical disclaimer warnings, scientific citations, and vegetarian/vegan support.
+    *   *Phase 4*: Added a `FastMCP` server wrapper to enable cross-platform tool invocation.
+
+### 9.3 How the Solution Works & Codebase Organization
+*   **Core Modules and Code Flow**:
+    *   **[main.py](file:///h:/Ravi_Work/Programming/Projects/kaggle_5day_1/agy2-projects/Kaggle_submission_1/main.py)** / **[app_gui.py](file:///h:/Ravi_Work/Programming/Projects/kaggle_5day_1/agy2-projects/Kaggle_submission_1/app_gui.py)**: Entrypoints initializing the UI and server.
+    *   **[app/agent.py](file:///h:/Ravi_Work/Programming/Projects/kaggle_5day_1/agy2-projects/Kaggle_submission_1/app/agent.py)**: Defines the declarative personas (`HabitArchitect` and `GroceryScout`), orchestrates them via `SequentialAgent`, and enforces the Pydantic output schema (`WealthHealthStrategy`).
+    *   **[app/tools.py](file:///h:/Ravi_Work/Programming/Projects/kaggle_5day_1/agy2-projects/Kaggle_submission_1/app/tools.py)**: Exposes the primary data tool `query_grocery` along with a typo-tolerant fallback alias `query_grocerey` to prevent LLM spelling execution crashes.
+    *   **[skills/grocery_scout_skill.py](file:///h:/Ravi_Work/Programming/Projects/kaggle_5day_1/agy2-projects/Kaggle_submission_1/skills/grocery_scout_skill.py)**: Performs deterministic lookups on [skills/grocery_lookup.json](file:///h:/Ravi_Work/Programming/Projects/kaggle_5day_1/agy2-projects/Kaggle_submission_1/skills/grocery_lookup.json) to retrieve calorie, carb, protein, fat, and cost metrics in USD/INR.
+    *   **[app/security.py](file:///h:/Ravi_Work/Programming/Projects/kaggle_5day_1/agy2-projects/Kaggle_submission_1/app/security.py)**: Sanitizes input parameters against prompt injections and masks credentials.
+    *   **[mcp_server.py](file:///h:/Ravi_Work/Programming/Projects/kaggle_5day_1/agy2-projects/Kaggle_submission_1/mcp_server.py)**: A stdio `FastMCP` server wrapper that exposes the ADK agent pipeline as an MCP tool.
+*   **Technologies Used**: Google ADK, Gemini 2.5 Pro, Python, FastAPI, Jinja2, TailwindCSS, Chart.js, FastMCP, and local Git for version tracking.
+
+### 9.4 Assumptions, Out of Scope, and Future Extensions
+*   **Assumptions**:
+    *   Ingredient pricing represents local bulk/wholesale rates.
+    *   The user has access to basic kitchen prep facilities.
+*   **Out of Scope**:
+    *   Live e-commerce checkout integration.
+    *   Real-time wearable device tracking (e.g., Fitbit/Apple Watch synchronization).
+*   **Future Extensions**:
+    *   *Dynamic Pricing*: Connecting the Grocery Scout to live online supermarket APIs.
+    *   *Visual Tracking*: Allowing users to take pictures of grocery receipts for automated agent ingestion and budget reconciliation.
+
+### 9.5 Central Idea & Relevance to the Capstone Track: Why Agents?
+*   **Negotiation & Arbitrage**: A standard program follows hardcoded rules. If a budget fails, it crashes or returns an empty result. Agents behave like human advisors—they renegotiate the meal plan by substituting cheaper items (e.g., swapping chicken breast for chickpeas or lentils) until the constraints align.
+*   **Central to the Solution**: The negotiation loop is the heart of CaloSpend. The planner agent continuously evaluates the budget, detects overruns, instructs the researcher agent to fetch alternatives, and refines the plan before presenting it to the user.
+*   **Innovation & Value**: By combining declarative personas, deterministic database skills, and strict schema guardrails, CaloSpend delivers a highly practical, creative, and reliable optimization assistant.
+
+### 9.6 Core Technical Components
+*   **AntiGravity**: Used as the AI coding agent environment for workspace audits, visual layout generation, security scans, and code packaging.
+*   **Google Agent Development Kit (ADK)**: The framework used to orchestrate the multi-agent cascade, defining declarative agent personas and handling agent execution state.
+*   **Gemini 2.5 Pro**: The core reasoning engine enabling complex constraint-negotiation loops and text synthesis.
+*   **FastMCP**: Provides the Model Context Protocol stdio entrypoint, exposing the agent pipeline as an MCP tool.
+*   **FastAPI & Uvicorn**: Serves the local web dashboard, providing async endpoints for strategy generation.
+*   **TailwindCSS & Chart.js**: Delivers a premium glassmorphic UI dashboard and interactive charts for nutrient tracking.
